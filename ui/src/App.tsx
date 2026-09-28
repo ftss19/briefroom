@@ -1,4 +1,5 @@
 import { useState } from "react";
+import MemoryStudio from "./MemoryStudio";
 
 type Source = { title: string; url: string; content: string };
 const demoSources: Source[] = [
@@ -114,7 +115,7 @@ export default function App() {
         <small>
           Built on Tavily’s meeting-prep agent
           <br />
-          Hackathon edition / 01
+          Meeting memory / 02
         </small>
       </aside>
       <main>
@@ -138,186 +139,194 @@ export default function App() {
             asking.
           </p>
         </section>
-        <div className="studio">
-          <section className="setup panel">
-            <div className="section-label">01 / SET THE INTENTION</div>
-            <h2>Who’s in the room?</h2>
-            <div className="switch">
-              {(["demo", "live"] as const).map((m) => (
-                <button
-                  key={m}
-                  className={mode === m ? "selected" : ""}
-                  onClick={() => setMode(m)}
-                >
-                  {m === "demo" ? "Try the demo" : "Live research"}
-                </button>
-              ))}
-            </div>
-            <label>
-              Company
-              <input
-                value={company}
-                onChange={(e) => setCompany(e.target.value)}
-                maxLength={160}
-                disabled={mode === "demo"}
-              />
-            </label>
-            <label>
-              Your ideal outcome
-              <textarea
-                value={goal}
-                onChange={(e) => setGoal(e.target.value)}
-                maxLength={1000}
-                disabled={mode === "demo"}
-              />
-            </label>
-            <p className="hint">
-              {mode === "demo"
-                ? "Explore a fictional meeting. No API keys required."
-                : "Live mode searches public sources with Tavily. Keep confidential details out of your search goal."}
-            </p>
-            <button
-              className="primary"
-              disabled={
-                busy || company.trim().length < 2 || goal.trim().length < 5
-              }
-              onClick={generate}
-            >
-              {busy ? "Researching…" : "Build my brief"} <span>↗</span>
-            </button>
-            {error && (
-              <p role="alert" className="error">
-                {error}
+        <MemoryStudio />
+        <details className="research-drawer">
+          <summary>
+            Optional: public research, rehearsal & readiness tools
+          </summary>
+          <div className="studio">
+            <section className="setup panel">
+              <div className="section-label">01 / SET THE INTENTION</div>
+              <h2>Who’s in the room?</h2>
+              <div className="switch">
+                {(["demo", "live"] as const).map((m) => (
+                  <button
+                    key={m}
+                    className={mode === m ? "selected" : ""}
+                    onClick={() => setMode(m)}
+                  >
+                    {m === "demo" ? "Try the demo" : "Live research"}
+                  </button>
+                ))}
+              </div>
+              <label>
+                Company
+                <input
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
+                  maxLength={160}
+                  disabled={mode === "demo"}
+                />
+              </label>
+              <label>
+                Your ideal outcome
+                <textarea
+                  value={goal}
+                  onChange={(e) => setGoal(e.target.value)}
+                  maxLength={1000}
+                  disabled={mode === "demo"}
+                />
+              </label>
+              <p className="hint">
+                {mode === "demo"
+                  ? "Explore a fictional meeting. No API keys required."
+                  : "Live mode searches public sources with Tavily. Keep confidential details out of your search goal."}
               </p>
-            )}
-            <div className="powered">
-              RESEARCH ENGINE <strong>tavily</strong>
-            </div>
-          </section>
-          <section className="result panel" aria-busy={busy}>
-            <div className="result-top">
-              <span className="section-label">02 / YOUR MEETING PLAYBOOK</span>
-              <button className="export" onClick={download}>
-                Export ↗
+              <button
+                className="primary"
+                disabled={
+                  busy || company.trim().length < 2 || goal.trim().length < 5
+                }
+                onClick={generate}
+              >
+                {busy ? "Researching…" : "Build my brief"} <span>↗</span>
               </button>
-            </div>
-            <h2>{brief.company}</h2>
-            <p className="outcome">{brief.goal}</p>
-            <div className="tabs">
-              {["Brief", "Rehearse", "Checklist"].map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setTab(t)}
-                  aria-pressed={tab === t}
-                  className={tab === t ? "current" : ""}
-                >
-                  {t}
-                </button>
-              ))}
-            </div>
-            {tab === "Brief" && (
-              <>
-                <div className="callout">
-                  <span>✳</span>
-                  <div>
-                    <strong>
-                      {brief.demo
-                        ? "Fictional sample, real workflow"
-                        : "Evidence before assumptions"}
-                    </strong>
-                    <p>
-                      {brief.demo
-                        ? "Use this sample to explore your preparation flow. Switch to live for real company research."
-                        : "These are source excerpts, not verified conclusions. Open the sources and validate before your meeting."}
-                    </p>
-                  </div>
-                </div>
-                <div className="section-label">
-                  SIGNALS TO BRING INTO THE ROOM
-                </div>
-                {sources.length === 0 && (
-                  <p>No sources found. Try a more specific company name.</p>
-                )}
-                {sources.map((s, i) => (
-                  <article key={i}>
-                    <span className="number">0{i + 1}</span>
-                    <div>
-                      <h3>{s.title}</h3>
-                      <p>{s.content}</p>
-                      {!brief.demo && (
-                        <a href={s.url} target="_blank" rel="noreferrer">
-                          Read source ↗
-                        </a>
-                      )}
-                    </div>
-                  </article>
-                ))}
-                <div className="next">
-                  <div className="section-label">
-                    SUGGESTED OPENING QUESTION
-                  </div>
-                  <h3>“What would make this meeting a win for you?”</h3>
-                </div>
-              </>
-            )}
-            {tab === "Rehearse" && (
-              <div className="rehearse">
-                <span className="section-label">
-                  QUESTION {question + 1} OF {questions.length} · PRACTICE
-                  PROMPT
-                </span>
-                <h3>{questions[question]}</h3>
-                <label>
-                  Your talking points
-                  <textarea
-                    placeholder="Practice a concise answer. Start with the outcome, then your evidence."
-                    value={answer}
-                    onChange={(e) => setAnswer(e.target.value)}
-                  />
-                </label>
-                <p className="hint">
-                  Self-check: did you name an outcome, support it with evidence,
-                  and invite their perspective? These are practice prompts, not
-                  AI-scored feedback.
+              {error && (
+                <p role="alert" className="error">
+                  {error}
                 </p>
-                <button
-                  className="primary"
-                  onClick={() => {
-                    setQuestion((question + 1) % questions.length);
-                  }}
-                >
-                  Next question →
+              )}
+              <div className="powered">
+                RESEARCH ENGINE <strong>tavily</strong>
+              </div>
+            </section>
+            <section className="result panel" aria-busy={busy}>
+              <div className="result-top">
+                <span className="section-label">
+                  02 / YOUR MEETING PLAYBOOK
+                </span>
+                <button className="export" onClick={download}>
+                  Export ↗
                 </button>
               </div>
-            )}
-            {tab === "Checklist" && (
-              <div className="checklist">
-                <h3>{checked.length} / 4 ready-to-meet essentials</h3>
-                {[
-                  "Validate the source material",
-                  "Define one measurable outcome",
-                  "Prepare a question for the decision-maker",
-                  "Agree on an owner and a next step",
-                ].map((item) => (
-                  <label key={item}>
-                    <input
-                      type="checkbox"
-                      checked={checked.includes(item)}
-                      onChange={() =>
-                        setChecked((c) =>
-                          c.includes(item)
-                            ? c.filter((x) => x !== item)
-                            : [...c, item],
-                        )
-                      }
-                    />
-                    {item}
-                  </label>
+              <h2>{brief.company}</h2>
+              <p className="outcome">{brief.goal}</p>
+              <div className="tabs">
+                {["Brief", "Rehearse", "Checklist"].map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setTab(t)}
+                    aria-pressed={tab === t}
+                    className={tab === t ? "current" : ""}
+                  >
+                    {t}
+                  </button>
                 ))}
               </div>
-            )}
-          </section>
-        </div>
+              {tab === "Brief" && (
+                <>
+                  <div className="callout">
+                    <span>✳</span>
+                    <div>
+                      <strong>
+                        {brief.demo
+                          ? "Fictional sample, real workflow"
+                          : "Evidence before assumptions"}
+                      </strong>
+                      <p>
+                        {brief.demo
+                          ? "Use this sample to explore your preparation flow. Switch to live for real company research."
+                          : "These are source excerpts, not verified conclusions. Open the sources and validate before your meeting."}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="section-label">
+                    SIGNALS TO BRING INTO THE ROOM
+                  </div>
+                  {sources.length === 0 && (
+                    <p>No sources found. Try a more specific company name.</p>
+                  )}
+                  {sources.map((s, i) => (
+                    <article key={i}>
+                      <span className="number">0{i + 1}</span>
+                      <div>
+                        <h3>{s.title}</h3>
+                        <p>{s.content}</p>
+                        {!brief.demo && (
+                          <a href={s.url} target="_blank" rel="noreferrer">
+                            Read source ↗
+                          </a>
+                        )}
+                      </div>
+                    </article>
+                  ))}
+                  <div className="next">
+                    <div className="section-label">
+                      SUGGESTED OPENING QUESTION
+                    </div>
+                    <h3>“What would make this meeting a win for you?”</h3>
+                  </div>
+                </>
+              )}
+              {tab === "Rehearse" && (
+                <div className="rehearse">
+                  <span className="section-label">
+                    QUESTION {question + 1} OF {questions.length} · PRACTICE
+                    PROMPT
+                  </span>
+                  <h3>{questions[question]}</h3>
+                  <label>
+                    Your talking points
+                    <textarea
+                      placeholder="Practice a concise answer. Start with the outcome, then your evidence."
+                      value={answer}
+                      onChange={(e) => setAnswer(e.target.value)}
+                    />
+                  </label>
+                  <p className="hint">
+                    Self-check: did you name an outcome, support it with
+                    evidence, and invite their perspective? These are practice
+                    prompts, not AI-scored feedback.
+                  </p>
+                  <button
+                    className="primary"
+                    onClick={() => {
+                      setQuestion((question + 1) % questions.length);
+                    }}
+                  >
+                    Next question →
+                  </button>
+                </div>
+              )}
+              {tab === "Checklist" && (
+                <div className="checklist">
+                  <h3>{checked.length} / 4 ready-to-meet essentials</h3>
+                  {[
+                    "Validate the source material",
+                    "Define one measurable outcome",
+                    "Prepare a question for the decision-maker",
+                    "Agree on an owner and a next step",
+                  ].map((item) => (
+                    <label key={item}>
+                      <input
+                        type="checkbox"
+                        checked={checked.includes(item)}
+                        onChange={() =>
+                          setChecked((c) =>
+                            c.includes(item)
+                              ? c.filter((x) => x !== item)
+                              : [...c, item],
+                          )
+                        }
+                      />
+                      {item}
+                    </label>
+                  ))}
+                </div>
+              )}
+            </section>
+          </div>
+        </details>
         <footer>
           Less scrambling. More substance.
           <span>BRIEFROOM / POWERED BY CURIOSITY</span>

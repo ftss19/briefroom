@@ -11,7 +11,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+from backend.memory import router as memory_router
+
 app = FastAPI()
+app.include_router(memory_router)
 
 # Add CORS middleware
 app.add_middleware(

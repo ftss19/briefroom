@@ -40,3 +40,5 @@ typing_extensions>=4.15.0
 uvicorn>=0.40.0
 langchain-groq>=1.1.1
 igptai>=1.1.0
+
+hindsight-client==0.10.1

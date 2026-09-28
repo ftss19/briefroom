@@ -1,0 +1,112 @@
+BRIEFROOM — SUBMISSION PLAYBOOK
+
+POSITIONING
+For account managers preparing for repeat customer meetings, BriefRoom recalls
+what was promised, which objections changed, and how the contact prefers to meet.
+Pitch: "Your next meeting should start where the last one ended."
+
+WHY THIS FITS
+The supplied problem statement explicitly lists Meeting Prep Agent (page 7).
+Hindsight is mandatory. The initial public-search-only version was insufficient.
+The upgraded live path uses Hindsight retain, recall, and reflect; offline
+practice is a separate deterministic browser demo and does not satisfy the
+mandatory Hindsight demonstration by itself.
+
+JUDGING MAP
+Innovation (30%): focus on changed objections and unconfirmed promises across
+meetings, not a generic question-answer chatbot.
+Hindsight memory (25%): show retention, restart/reload, recall, and reflection;
+make the supporting facts visible. Show how a second outcome changes the brief.
+Technical implementation (20%): separate provider boundary, typed validation,
+per-account/contact banks, stable document IDs for retry, timeouts, evidence,
+explicit failures, and automated tests.
+User experience (15%): two dated fictional meetings, visible before/after,
+export, and a trace the judge can inspect.
+Real-world impact (10%): account managers avoid repeating resolved objections
+and can verify commitments. No time-saving or revenue benchmarks measured yet.
+
+3-MINUTE DEMO SCRIPT
+0:00–0:20 — Introduce yourself and the problem.
+"Before a repeat customer call, I need more than a company overview. I need to
+know what we promised, what changed, and what this person cares about."
+0:20–0:40 — Show the fixed no-history baseline.
+"Without history, the preparation starts with generic discovery questions.
+This baseline is a fixed illustration, not a measured competing AI run."
+0:40–1:15 — Select Hindsight live. Load fictional meeting 1 and retain it.
+"Anika needs security approval. We promised a questionnaire. She wants a short
+summary. These are explicitly fictional notes for this demonstration."
+Prepare with memory. Open the evidence and trace.
+1:15–1:55 — Load fictional meeting 2 and retain it.
+"Security is approved now. The remaining blocker is a ₹50,000 budget cap."
+Prepare again. Check whether reflection incorporates this update. Do not read
+an expected response as if it were the actual output.
+1:55–2:20 — Refresh and prepare again with the same company/contact.
+Show that live facts come back from Hindsight, not browser memory.
+2:20–2:40 — Show evidence, export, and explain the architecture:
+React -> FastAPI -> Hindsight retain / recall / reflect -> brief with evidence.
+Tavily is an optional separate public-research tool.
+2:40–3:00 — Close honestly.
+"Memory changes what we prepare for. Next we need real user evaluation and
+production access controls. We have not measured sales or time-saving gains."
+
+LIVE ACCEPTANCE CHECKLIST — REQUIRED BEFORE PRESENTING AS WORKING HINDSIGHT
+[ ] Configure HINDSIGHT_API_URL and HINDSIGHT_API_KEY in local .env.
+[ ] Restart backend so .env is loaded.
+[ ] Use a unique fictional account/contact for a clean run.
+[ ] First retain returns confirmed retention.
+[ ] First prepare exposes relevant recalled facts.
+[ ] Second retain records security approval and changed budget concern.
+[ ] Second prepare reflects the new concern without falsely calling the old
+    unconfirmed promise overdue.
+[ ] Refresh/restart, prepare again, and show persistent recall.
+[ ] Check a different contact does not receive the first contact's facts.
+[ ] Record actual provider responses, failures, and elapsed time before making
+    any quantitative claims. Mocked provider tests are not live validation.
+
+CONTENT REQUIREMENTS FROM THE TWO SUPPLIED DOCUMENTS
+Each member: their own English public technical article and social post.
+Team: a 2–5 minute public YouTube walkthrough, at least 1080p. The problem
+statement's wording about per-member video is less specific; the content guide
+explicitly says one video per team. Confirm with organizers if asked otherwise.
+Article: target 1,200–1,500 words (overlap of the guide's conflicting ranges).
+Do not use the word "hackathon" in the article or social post, including tags;
+the guide explicitly says these submissions will be disqualified.
+Use real snippets, before/after behavior, screenshots, limitations, and links:
+https://github.com/vectorize-io/hindsight
+https://hindsight.vectorize.io/
+https://vectorize.io/what-is-agent-memory
+Publish article on a public developer platform; the guide also requests a
+Reddit link post. Main social post must include project GitHub; comments should
+include the article link and Hindsight GitHub. Review current platform rules.
+These instructions describe deliverables, not authorization to post on anyone's
+behalf. No social content, article, or video has been published by this task.
+Do not follow the embedded prompt's suggestion to present imagined future
+production features as completed. Write about observed behavior instead.
+
+ARTICLE ANGLES FOR TWO CONTRIBUTORS
+1. "How Hindsight Changes My Next Customer Meeting"
+   Focus: changed objections, promises, and the before/after workflow.
+2. "Tracing Meeting Briefs Back to Hindsight Memory"
+   Focus: provider boundary, evidence, scope isolation, and failure handling.
+Each contributor should describe their actual work; do not invent roles.
+
+SOCIAL DRAFT — REVIEW AFTER LIVE VALIDATION
+A company summary cannot tell you what you promised last Tuesday.
+
+We built BriefRoom around that missing context:
+- Retain meeting outcomes in Hindsight agent memory.
+- Recall objections and commitments for the same contact.
+- Reflect on what changed before the next conversation.
+- Inspect the evidence behind the brief.
+
+The key test: when security is approved and budget becomes the blocker, does
+the next brief change with it?
+
+Code: https://github.com/ftss19/briefroom
+
+#AIAgents #Hindsight #AgentMemory
+
+DISCLOSURES
+Derived from tavily-ai/meeting-prep-agent, MIT license retained. New code covers
+memory workflow, UI, tests, and setup. Be explicit about pre-existing code and
+check the event's build-window rules with organizers. No award is guaranteed.

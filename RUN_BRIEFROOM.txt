@@ -30,3 +30,25 @@ DEMO STORY
 2. Rehearse a stakeholder question and draft talking points.
 3. Complete the readiness checklist and export the brief.
 4. With a Tavily key configured, research a real company.
+
+HINDSIGHT MEETING MEMORY
+Install the focused local dependencies:
+pip install fastapi uvicorn httpx python-dotenv hindsight-client==0.10.1
+Add HINDSIGHT_API_URL and HINDSIGHT_API_KEY to root .env, then restart:
+python app.py
+Cloud endpoint and key come from your own Hindsight instance. A local instance
+can omit the key if its own authentication configuration permits it.
+Select Hindsight live in the memory studio. Load a fictional meeting, retain,
+then prepare. Repeat with meeting 2 and compare evidence and changed context.
+Retain is synchronous; allow up to 90 seconds per provider operation. A prepare
+request performs recall then reflect and can take longer than a single call.
+Offline practice uses browser localStorage and a fixed latest-note template;
+it is not Hindsight or model learning. The live service stores extracted facts
+and reflects over the accumulated context; it does not retrain model weights.
+API routes: GET /api/memory/status; POST /api/memory/retain;
+POST /api/memory/prepare. Implementation: backend/memory.py.
+Run tests: python3 -m unittest discover -s tests -v
+Use SUBMISSION_PLAYBOOK.txt for judging alignment and a 3-minute demo script.
+This is a localhost, single-user workspace. Company/contact banks are data
+scopes, not authorization. Add authenticated tenant isolation before sharing
+an internet-accessible backend. Neither notes nor keys belong in Git.
