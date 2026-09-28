@@ -3,9 +3,13 @@ import json
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
-from backend.agent import MeetingPlanner
+import os
+import httpx
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI()
 
@@ -27,6 +31,7 @@ class DateRequest(BaseModel):
 async def analyze_meetings(request: DateRequest):
     try:
         # Create and initialize the meeting planner
+        from backend.agent import MeetingPlanner
         planner = MeetingPlanner()
 
         # Build the graph
@@ -68,7 +73,33 @@ async def analyze_meetings(request: DateRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+
+
+class BriefRequest(BaseModel):
+    company: str = Field(min_length=2, max_length=160)
+    goal: str = Field(min_length=5, max_length=1000)
+
+
+@app.post("/api/brief")
+async def create_brief(request: BriefRequest):
+    key = os.getenv("TAVILY_API_KEY")
+    if not key:
+        raise HTTPException(503, "Set TAVILY_API_KEY in .env to enable live research.")
+    try:
+        async with httpx.AsyncClient(timeout=40) as client:
+            response = await client.post("https://api.tavily.com/search", json={
+                "api_key": key,
+                "query": f"{request.company} company recent developments {request.goal}",
+                "search_depth": "advanced", "max_results": 5,
+            })
+            response.raise_for_status()
+            results = response.json().get("results", [])
+        return {"sources": [{"title": r.get("title", "Source"), "url": r["url"],
+                              "content": r.get("content", "")[:1800]}
+                             for r in results if r.get("url", "").startswith(("https://", "http://"))]}
+    except (httpx.HTTPError, ValueError, KeyError):
+        raise HTTPException(502, "Research service unavailable. Please retry shortly.")
+
 if __name__ == "__main__":
     import uvicorn
-
-    uvicorn.run(app, host="0.0.0.0", port=5000)
+    uvicorn.run(app, host="127.0.0.1", port=5000)

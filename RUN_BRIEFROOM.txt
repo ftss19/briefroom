@@ -1,0 +1,32 @@
+BRIEFROOM — Hackathon edition
+Based on https://github.com/tavily-ai/meeting-prep-agent (MIT).
+Upstream license and calendar workflow are retained.
+
+FRONTEND / KEY-FREE DEMO
+cd ui
+npm ci
+npm start
+Open http://localhost:5173
+
+LIVE RESEARCH
+Create a Python virtual environment and install:
+pip install fastapi uvicorn httpx python-dotenv
+Set TAVILY_API_KEY in a root .env file, then run:
+python app.py
+Start the frontend as above and select Live research.
+The original calendar endpoint additionally needs requirements.txt and the
+upstream Google Calendar MCP setup described in README.md.
+
+PRODUCT
+Demo uses fictional Northstar Labs data and makes no network research calls.
+Live mode retrieves Tavily source excerpts; it does not claim verified facts.
+Rehearsal is a self-guided practice flow, without automated scoring.
+Checklist and practice notes are session-only. Export saves a text brief.
+The server binds to localhost. Add authentication, rate limits, and hosting
+configuration before exposing live research publicly.
+
+DEMO STORY
+1. Explore the fictional meeting brief.
+2. Rehearse a stakeholder question and draft talking points.
+3. Complete the readiness checklist and export the brief.
+4. With a Tavily key configured, research a real company.
